@@ -1,3 +1,5 @@
+use std::ops::Index;
+use color_eyre::owo_colors::OwoColorize;
 use itertools::Itertools;
 use crate::AoCProblem;
 
@@ -32,62 +34,48 @@ impl AoCProblem for Day01 {
     }
 
     fn part_2(&self) -> Option<String> {
+        let needle = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"].map(|s| s.chars().collect_vec());
+        let eldeen = ["eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin"].map(|s| s.chars().collect_vec());
+
         let res = self.input.iter().map(|l| {
-            let mut line_res = vec![];
-            let chars = l.chars().collect_vec();
+            let mut haystack = l.chars().collect_vec();
 
-            for i in 0..chars.len() {
-                if chars[i].is_ascii_digit() {
-                    line_res.push(chars[i].to_digit(10).unwrap());
+            let mut first = 0;
+            'outer: for i in 0..l.len() {
+                if haystack[i].is_ascii_digit() {
+                    first = haystack[i].to_digit(10).unwrap();
+                    break;
                 }
 
-                if i + 3 <= chars.len() {
-                    if chars[i..i + 3].iter().collect::<String>() == "one" {
-                        line_res.push(1);
-                    }
-
-                    if chars[i..i + 3].iter().collect::<String>() == "two" {
-                        line_res.push(2);
-                    }
-
-                    if chars[i..i + 3].iter().collect::<String>() == "six" {
-                        line_res.push(6);
-                    }
-                }
-
-                if i + 4 <= chars.len() {
-                    if chars[i..i + 4].iter().collect::<String>() == "four" {
-                        line_res.push(4);
-                    }
-
-                    if chars[i..i + 4].iter().collect::<String>() == "five" {
-                        line_res.push(5);
-                    }
-
-                    if chars[i..i + 4].iter().collect::<String>() == "nine" {
-                        line_res.push(9);
-                    }
-                }
-
-                if i + 5 <= chars.len() {
-                    if chars[i..i + 5].iter().collect::<String>() == "three" {
-                        line_res.push(3);
-                    }
-
-
-                    if chars[i..i + 5].iter().collect::<String>() == "seven" {
-                        line_res.push(7);
-                    }
-
-                    if chars[i..i + 5].iter().collect::<String>() == "eight" {
-                        line_res.push(8);
+                for j in 0..needle.len() {
+                    // check if the needle is in the haystack
+                    if i + needle[j].len() <= l.len() && haystack[i..i + needle[j].len()] == needle[j] {
+                        first = (j + 1) as u32;
+                        break 'outer;
                     }
                 }
             }
 
-            line_res
+            haystack.reverse();
+            let mut last = 0;
+            'outer: for i in 0..l.len() {
+                if haystack[i].is_ascii_digit() {
+                    last = haystack[i].to_digit(10).unwrap();
+                    break;
+                }
+
+                for j in 0..eldeen.len() {
+                    // check if the needle is in the haystack
+                    if i + eldeen[j].len() <= l.len() && haystack[i..i + eldeen[j].len()] == eldeen[j] {
+                        last = (j + 1) as u32;
+                        break 'outer;
+                    }
+                }
+            }
+
+
+            first * 10 + last
         })
-            .map(|l| 10 * l.first().unwrap() + l.last().unwrap())
             .sum::<u32>()
             .to_string();
 
@@ -96,5 +84,26 @@ impl AoCProblem for Day01 {
 
     fn get_day_name(&self) -> String {
         "Day 01: Trebuchet?!".into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use itertools::Itertools;
+    use pretty_assertions::assert_eq;
+    use crate::AoCProblem;
+
+    #[test]
+    fn test_part_1() {
+        let mut day = super::Day01 { input: "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet".lines().map(ToOwned::to_owned).collect_vec() };
+
+        assert_eq!(day.part_1(), Some("142".into()));
+    }
+
+    #[test]
+    fn test_part_2() {
+        let mut day = super::Day01 { input: "two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen".lines().map(ToOwned::to_owned).collect_vec() };
+
+        assert_eq!(day.part_2(), Some("281".into()));
     }
 }
