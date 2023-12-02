@@ -1,13 +1,18 @@
+#![feature(never_type)]
+
 use std::time::Instant;
 use crate::day01::Day01;
+use crate::day02::Day02;
 
 mod day01;
+mod day02;
 
 fn main() {
     color_eyre::install().unwrap();
 
     let days: Vec<Box<dyn AoCProblem>> = vec![
         Box::<Day01>::default(),
+        Box::<Day02>::default(),
     ];
 
     for mut day in days {
