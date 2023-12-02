@@ -1,21 +1,27 @@
 use std::str::FromStr;
+
 use itertools::Itertools;
+
 use crate::AoCProblem;
 
 #[derive(Default)]
 pub struct Day02 {
-    data: Vec<Vec<CubeSet>>
+    data: Vec<Vec<CubeSet>>,
 }
 
 static INPUT: &str = include_str!("../../inputs/day02.txt");
 
 impl AoCProblem for Day02 {
-    fn parse_input(&mut self) {
-       self.data =
-           INPUT
-               .lines()
-               .map(|l| l[l.find(": ").unwrap()+2..].split(';').map(|b| b.parse().unwrap()).collect_vec())
-               .collect_vec()
+    fn parse_input(&mut self, input: &str) {
+        self.data =
+            input
+                .lines()
+                .map(|l| l[l.find(": ").unwrap() + 2..].split(';').map(|b| b.parse().unwrap()).collect_vec())
+                .collect_vec()
+    }
+
+    fn parse_input_default(&mut self) {
+        self.parse_input(INPUT)
     }
 
     fn part_1(&self) -> Option<String> {
@@ -52,10 +58,10 @@ struct CubeSet {
 }
 
 impl CubeSet {
-    pub fn is_valid(&self)  -> bool {
+    pub const fn is_valid(&self) -> bool {
         self.red <= 12
-        && self.green <= 13
-        && self.blue <= 14
+            && self.green <= 13
+            && self.blue <= 14
     }
 
     pub fn power(days: &[Self]) -> u32 {
@@ -97,14 +103,13 @@ impl FromStr for CubeSet {
         Ok(Self {
             red,
             green,
-            blue
+            blue,
         })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools;
     use crate::AoCProblem;
 
     #[test]
@@ -115,9 +120,8 @@ Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
 Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
 Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
 
-        let day = super::Day02 { data:     input.lines()
-            .map(|l| l[l.find(": ").unwrap()+2..].split(';').map(|b| b.parse().unwrap()).collect_vec())
-            .collect_vec()};
+        let mut day = super::Day02::default();
+        day.parse_input(input);
 
         assert_eq!(day.part_1(), Some("8".into()));
     }
@@ -130,9 +134,8 @@ Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
 Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
 Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
 
-        let day = super::Day02 { data:     input.lines()
-            .map(|l| l[l.find(": ").unwrap()+2..].split(';').map(|b| b.parse().unwrap()).collect_vec())
-            .collect_vec()};
+        let mut day = super::Day02::default();
+        day.parse_input(input);
 
         assert_eq!(day.part_2(), Some("2286".into()));
     }

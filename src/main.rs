@@ -1,6 +1,7 @@
 #![feature(never_type)]
 
 use std::time::Instant;
+
 use crate::day01::Day01;
 use crate::day02::Day02;
 
@@ -21,7 +22,8 @@ fn main() {
 }
 
 pub trait AoCProblem {
-    fn parse_input(&mut self);
+    fn parse_input(&mut self, input: &str);
+    fn parse_input_default(&mut self);
     fn part_1(&self) -> Option<String>;
     fn part_2(&self) -> Option<String>;
     fn get_day_name(&self) -> String;
@@ -30,7 +32,7 @@ pub trait AoCProblem {
         println!("{}:", self.get_day_name());
 
         let start = Instant::now();
-        self.parse_input();
+        self.parse_input_default();
         println!("\tParsing input took: {:?}\n", start.elapsed());
 
         let start = Instant::now();

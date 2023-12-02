@@ -1,6 +1,5 @@
-use std::ops::Index;
-use color_eyre::owo_colors::OwoColorize;
 use itertools::Itertools;
+
 use crate::AoCProblem;
 
 #[derive(Debug, Default)]
@@ -11,8 +10,12 @@ pub struct Day01 {
 static INPUT: &str = include_str!("../../inputs/day01.txt");
 
 impl AoCProblem for Day01 {
-    fn parse_input(&mut self) {
-        self.input = INPUT.lines().map(|l| l.to_string()).collect();
+    fn parse_input(&mut self, input: &str) {
+        self.input = input.lines().map(|l| l.to_string()).collect();
+    }
+
+    fn parse_input_default(&mut self) {
+        self.parse_input(INPUT)
     }
 
     fn part_1(&self) -> Option<String> {
@@ -89,20 +92,22 @@ impl AoCProblem for Day01 {
 
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools;
     use pretty_assertions::assert_eq;
+
     use crate::AoCProblem;
 
     #[test]
     fn test_part_1() {
-        let mut day = super::Day01 { input: "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet".lines().map(ToOwned::to_owned).collect_vec() };
+        let mut day = super::Day01::default();
+        day.parse_input("1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet");
 
         assert_eq!(day.part_1(), Some("142".into()));
     }
 
     #[test]
     fn test_part_2() {
-        let mut day = super::Day01 { input: "two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen".lines().map(ToOwned::to_owned).collect_vec() };
+        let mut day = super::Day01::default();
+        day.parse_input("two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen");
 
         assert_eq!(day.part_2(), Some("281".into()));
     }
