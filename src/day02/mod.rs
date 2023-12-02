@@ -111,6 +111,7 @@ impl FromStr for CubeSet {
 #[cfg(test)]
 mod tests {
     use crate::AoCProblem;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn part1() {
