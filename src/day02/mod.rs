@@ -13,11 +13,15 @@ static INPUT: &str = include_str!("../../inputs/day02.txt");
 
 impl AoCProblem for Day02 {
     fn parse_input(&mut self, input: &str) {
-        self.data =
-            input
-                .lines()
-                .map(|l| l[l.find(": ").unwrap() + 2..].split(';').map(|b| b.parse().unwrap()).collect_vec())
-                .collect_vec()
+        self.data = input
+            .lines()
+            .map(|l| {
+                l[l.find(": ").unwrap() + 2..]
+                    .split(';')
+                    .map(|b| b.parse().unwrap())
+                    .collect_vec()
+            })
+            .collect_vec()
     }
 
     fn parse_input_default(&mut self) {
@@ -32,7 +36,7 @@ impl AoCProblem for Day02 {
                 .filter(|(_, v)| v.iter().all(|c| c.is_valid()))
                 .map(|(i, _)| i + 1)
                 .sum::<usize>()
-                .to_string()
+                .to_string(),
         )
     }
 
@@ -42,7 +46,7 @@ impl AoCProblem for Day02 {
                 .iter()
                 .map(|d| CubeSet::power(d))
                 .sum::<u32>()
-                .to_string()
+                .to_string(),
         )
     }
 
@@ -59,9 +63,7 @@ struct CubeSet {
 
 impl CubeSet {
     pub const fn is_valid(&self) -> bool {
-        self.red <= 12
-            && self.green <= 13
-            && self.blue <= 14
+        self.red <= 12 && self.green <= 13 && self.blue <= 14
     }
 
     pub fn power(days: &[Self]) -> u32 {
@@ -96,22 +98,19 @@ impl FromStr for CubeSet {
                 "red" => red += value.parse::<u32>().unwrap(),
                 "green" => green += value.parse::<u32>().unwrap(),
                 "blue" => blue += value.parse::<u32>().unwrap(),
-                _ => unreachable!()
+                _ => unreachable!(),
             }
         }
 
-        Ok(Self {
-            red,
-            green,
-            blue,
-        })
+        Ok(Self { red, green, blue })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::AoCProblem;
     use pretty_assertions::assert_eq;
+
+    use crate::AoCProblem;
 
     #[test]
     fn part1() {

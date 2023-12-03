@@ -20,65 +20,75 @@ impl AoCProblem for Day01 {
 
     fn part_1(&self) -> Option<String> {
         Some(
-            self
-                .input
+            self.input
                 .iter()
-                .map(|l|
-                    l
-                        .chars()
+                .map(|l| {
+                    l.chars()
                         .filter(|c| c.is_ascii_digit())
                         .map(|c| c.to_digit(10).unwrap())
                         .collect_vec()
-                )
+                })
                 .map(|l| 10 * l.first().unwrap() + l.last().unwrap())
                 .sum::<u32>()
-                .to_string()
+                .to_string(),
         )
     }
 
     fn part_2(&self) -> Option<String> {
-        let needle = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"].map(|s| s.chars().collect_vec());
-        let eldeen = ["eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin"].map(|s| s.chars().collect_vec());
+        let needle = [
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        ]
+        .map(|s| s.chars().collect_vec());
+        let eldeen = [
+            "eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin",
+        ]
+        .map(|s| s.chars().collect_vec());
 
-        let res = self.input.iter().map(|l| {
-            let mut haystack = l.chars().collect_vec();
+        let res = self
+            .input
+            .iter()
+            .map(|l| {
+                let mut haystack = l.chars().collect_vec();
 
-            let mut first = 0;
-            'outer: for i in 0..l.len() {
-                if haystack[i].is_ascii_digit() {
-                    first = haystack[i].to_digit(10).unwrap();
-                    break;
-                }
+                let mut first = 0;
+                'outer: for i in 0..l.len() {
+                    if haystack[i].is_ascii_digit() {
+                        first = haystack[i].to_digit(10).unwrap();
+                        break;
+                    }
 
-                for j in 0..needle.len() {
-                    // check if the needle is in the haystack
-                    if i + needle[j].len() <= l.len() && haystack[i..i + needle[j].len()] == needle[j] {
-                        first = (j + 1) as u32;
-                        break 'outer;
+                    for j in 0..needle.len() {
+                        // check if the needle is in the haystack
+                        if i + needle[j].len() <= l.len()
+                            && haystack[i..i + needle[j].len()] == needle[j]
+                        {
+                            first = (j + 1) as u32;
+                            break 'outer;
+                        }
                     }
                 }
-            }
 
-            haystack.reverse();
-            let mut last = 0;
-            'outer: for i in 0..l.len() {
-                if haystack[i].is_ascii_digit() {
-                    last = haystack[i].to_digit(10).unwrap();
-                    break;
-                }
+                haystack.reverse();
+                let mut last = 0;
+                'outer: for i in 0..l.len() {
+                    if haystack[i].is_ascii_digit() {
+                        last = haystack[i].to_digit(10).unwrap();
+                        break;
+                    }
 
-                for j in 0..eldeen.len() {
-                    // check if the needle is in the haystack
-                    if i + eldeen[j].len() <= l.len() && haystack[i..i + eldeen[j].len()] == eldeen[j] {
-                        last = (j + 1) as u32;
-                        break 'outer;
+                    for j in 0..eldeen.len() {
+                        // check if the needle is in the haystack
+                        if i + eldeen[j].len() <= l.len()
+                            && haystack[i..i + eldeen[j].len()] == eldeen[j]
+                        {
+                            last = (j + 1) as u32;
+                            break 'outer;
+                        }
                     }
                 }
-            }
 
-
-            first * 10 + last
-        })
+                first * 10 + last
+            })
             .sum::<u32>()
             .to_string();
 
