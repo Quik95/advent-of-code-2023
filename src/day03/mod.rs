@@ -20,72 +20,60 @@ impl AoCProblem for Day03 {
 
     fn part_1(&self) -> Option<String> {
         let symbols = self.data.get_symbols();
-        let mut sum = 0;
-        for (x, y) in symbols {
-            let mut numbers = vec![];
-            for (dx, dy) in &[
-                (0, 1),
-                (1, 0),
-                (0, -1),
-                (-1, 0),
-                (1, 1),
-                (-1, -1),
-                (-1, 1),
-                (1, -1),
-            ] {
-                if self.data.get_or_default(x + dx, y + dy).is_ascii_digit() {
-                    numbers.push(self.data.find_number_bounds(x + dx, y + dy).unwrap());
-                }
-            }
-            sum += numbers
+        let sum = symbols
+            .iter()
+            .map(|(x, y)| {
+                [
+                    (0, 1),
+                    (1, 0),
+                    (0, -1),
+                    (-1, 0),
+                    (1, 1),
+                    (-1, -1),
+                    (-1, 1),
+                    (1, -1),
+                ]
                 .iter()
+                .filter(|(dx, dy)| self.data.get_or_default(x + dx, y + dy).is_ascii_digit())
+                .map(|(dx, dy)| self.data.find_number_bounds(x + dx, y + dy).unwrap())
                 .unique()
-                .map(|(start, end)| {
-                    self.data.map[*start..=*end]
-                        .iter()
-                        .collect::<String>()
-                        .parse::<i32>()
-                        .unwrap()
-                })
-                .sum::<i32>();
-        }
+                .map(|(st, en)| char_slice_to_int(&self.data.map[st..=en]))
+                .sum::<i32>()
+            })
+            .sum::<i32>();
 
         Some(sum.to_string())
     }
 
     fn part_2(&self) -> Option<String> {
         let symbols = self.data.get_gear_symbols();
-        let mut sum = 0;
-        for (x, y) in symbols {
-            let mut numbers = vec![];
-            for (dx, dy) in &[
-                (0, 1),
-                (1, 0),
-                (0, -1),
-                (-1, 0),
-                (1, 1),
-                (-1, -1),
-                (-1, 1),
-                (1, -1),
-            ] {
-                if self.data.get_or_default(x + dx, y + dy).is_ascii_digit() {
-                    numbers.push(self.data.find_number_bounds(x + dx, y + dy).unwrap());
-                }
-            }
-            let unique = numbers.iter().unique().collect_vec();
-            if unique.len() == 2 {
-                sum += unique
+        let sum = symbols
+            .iter()
+            .map(|(x, y)| {
+                [
+                    (0, 1),
+                    (1, 0),
+                    (0, -1),
+                    (-1, 0),
+                    (1, 1),
+                    (-1, -1),
+                    (-1, 1),
+                    (1, -1),
+                ]
+                .iter()
+                .filter(|(dx, dy)| self.data.get_or_default(x + dx, y + dy).is_ascii_digit())
+                .map(|(dx, dy)| self.data.find_number_bounds(x + dx, y + dy).unwrap())
+                .unique()
+                .collect_vec()
+            })
+            .filter(|unique| unique.len() == 2)
+            .map(|unique| {
+                unique
                     .iter()
-                    .map(|(start, end)| {
-                        self.data.map[*start..=*end]
-                            .iter()
-                            .collect::<String>()
-                            .parse::<i32>()
-                            .unwrap()
-                    })
-                    .product::<i32>();
-            }
-        }
+                    .map(|(start, end)| char_slice_to_int(&self.data.map[*start..=*end]))
+                    .product::<i32>()
+            })
+            .sum::<i32>();
 
         Some(sum.to_string())
     }
@@ -93,6 +81,12 @@ impl AoCProblem for Day03 {
     fn get_day_name(&self) -> String {
         "Day 03: Gear Ratios".into()
     }
+}
+
+fn char_slice_to_int(slice: &[char]) -> i32 {
+    slice.iter().rev().enumerate().fold(0, |acc, (i, c)| {
+        acc + (*c as i32 - '0' as i32) * 10_i32.pow(i as u32)
+    })
 }
 
 #[derive(Default)]
