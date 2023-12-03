@@ -1,6 +1,6 @@
 #![feature(never_type)]
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use crate::day01::Day01;
 use crate::day02::Day02;
@@ -19,9 +19,13 @@ fn main() {
         Box::<Day03>::default(),
     ];
 
-    for mut day in days {
-        day.print_solution();
-    }
+    let n_days = days.len();
+    let total = days
+        .into_iter()
+        .fold(Duration::from_secs(0), |acc, mut day| {
+            acc + day.print_solution()
+        });
+    println!("Total time for {} days: {:?}", n_days, total);
 }
 
 pub trait AoCProblem {
@@ -31,23 +35,33 @@ pub trait AoCProblem {
     fn part_2(&self) -> Option<String>;
     fn get_day_name(&self) -> String;
 
-    fn print_solution(&mut self) {
+    fn print_solution(&mut self) -> Duration {
         println!("{}:", self.get_day_name());
 
         let start = Instant::now();
         self.parse_input_default();
-        println!("\tParsing input took: {:?}\n", start.elapsed());
+        let elapsed_parse = start.elapsed();
+        println!("\tParsing input took: {:?}\n", elapsed_parse);
 
         let start = Instant::now();
+        let mut elapsed_part1 = Duration::from_secs(0);
         if let Some(part_1) = self.part_1() {
             println!("\tPart 1: {}", part_1);
-            println!("\tPart 1 took: {:?}\n", start.elapsed());
+            elapsed_part1 = start.elapsed();
+            println!("\tPart 1 took: {:?}\n", elapsed_part1);
         }
 
         let start = Instant::now();
+        let mut elapsed_part2 = Duration::from_secs(0);
         if let Some(part_2) = self.part_2() {
             println!("\tPart 2: {}", part_2);
-            println!("\tPart 2 took: {:?}\n", start.elapsed());
+            elapsed_part2 = start.elapsed();
+            println!("\tPart 2 took: {:?}\n", elapsed_part2);
         }
+
+        let total_duration = elapsed_parse + elapsed_part1 + elapsed_part2;
+        println!("\tTotal time: {:?}\n", total_duration);
+
+        total_duration
     }
 }
