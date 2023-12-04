@@ -5,10 +5,12 @@ use std::time::{Duration, Instant};
 use crate::day01::Day01;
 use crate::day02::Day02;
 use crate::day03::Day03;
+use crate::day04::Day04;
 
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
 fn main() {
     color_eyre::install().unwrap();
@@ -17,6 +19,7 @@ fn main() {
         Box::<Day01>::default(),
         Box::<Day02>::default(),
         Box::<Day03>::default(),
+        Box::<Day04>::default(),
     ];
 
     let n_days = days.len();
