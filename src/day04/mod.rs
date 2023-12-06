@@ -91,7 +91,7 @@ impl FromStr for ScratchCard {
             .map(|n| n.parse().unwrap())
             .collect();
 
-        Ok(ScratchCard { winning, scratch })
+        Ok(Self { winning, scratch })
     }
 }
 
