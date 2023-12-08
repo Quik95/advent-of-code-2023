@@ -2,6 +2,10 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 use itertools::Itertools;
+use nom::{Finish, IResult, InputTake};
+use nom::bytes::complete::{tag, take};
+use nom::combinator::map;
+use nom::sequence::{delimited, separated_pair};
 
 use crate::AoCProblem;
 
@@ -106,14 +110,8 @@ impl FromStr for Node {
     type Err = !;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut parts = s.split(" = ");
-        let label = parts.next().unwrap().to_string();
-        let connected = parts.next().unwrap();
-        let mut connected = connected[1..connected.len() - 1].split(", ");
-        let left = connected.next().unwrap().to_string();
-        let right = connected.next().unwrap().to_string();
-
-        Ok(Self { label, left, right })
+        let (_, node) = parse_node(s).finish().unwrap();
+        Ok(node)
     }
 }
 
@@ -127,6 +125,30 @@ fn gcd(a: u64, b: u64) -> u64 {
 
 fn lcm(a: u64, b: u64) -> u64 {
     (a * b) / gcd(a, b)
+}
+
+fn parse_node_label(i: &str) -> IResult<&str, &str> {
+    take(3_usize)(i)
+}
+
+fn parse_node_exits(i: &str) -> IResult<&str, (&str, &str)> {
+    let f = separated_pair(take(3_usize), tag(", "), take(3_usize));
+
+    delimited(tag("("), f, tag(")"))(i)
+}
+
+fn parse_node(i: &str) -> IResult<&str, Node> {
+    let (i, label) = parse_node_label(i)?;
+    let (i, _) = map(tag(" = "), drop)(i)?;
+    let (i, (l, r)) = parse_node_exits(i)?;
+    Ok((
+        i,
+        Node {
+            label: label.into(),
+            left: l.into(),
+            right: r.into(),
+        },
+    ))
 }
 
 #[cfg(test)]
