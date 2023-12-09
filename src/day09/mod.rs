@@ -24,7 +24,7 @@ impl AoCProblem for Day09 {
                 .iter()
                 .map(|s| s.get_next_value())
                 .sum::<i32>()
-                .to_string()
+                .to_string(),
         )
     }
 
@@ -32,10 +32,12 @@ impl AoCProblem for Day09 {
         Some(
             self.data
                 .iter()
-                .map(|s| NumberSequence { numbers: s.numbers.iter().rev().copied().collect_vec() })
+                .map(|s| NumberSequence {
+                    numbers: s.numbers.iter().rev().copied().collect_vec(),
+                })
                 .map(|s| s.get_next_value())
                 .sum::<i32>()
-                .to_string()
+                .to_string(),
         )
     }
 
@@ -52,17 +54,19 @@ struct NumberSequence {
 impl NumberSequence {
     fn get_next_value(&self) -> i32 {
         let mut seq = self.numbers.clone();
-        let mut tails = vec![];
+        let mut helper = Vec::with_capacity(seq.len());
+        let mut cum_sum = 0;
+
         while !seq.iter().all(|n| *n == 0) {
-            tails.push(seq.last().copied().unwrap());
-            seq = seq.windows(2).map(|w| w[1] - w[0]).collect_vec();
+            cum_sum += seq.last().unwrap_or(&0);
+
+            helper.clear();
+            helper.extend(seq.windows(2).map(|w| w[1] - w[0]));
+            seq.clear();
+            seq.extend(helper.iter());
         }
 
-        tails
-            .into_iter()
-            .rev()
-            .reduce(|a, b| a + b)
-            .unwrap_or(0)
+        cum_sum
     }
 }
 
@@ -71,7 +75,7 @@ impl FromStr for NumberSequence {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self {
-            numbers: s.split_whitespace().map(|l| l.parse().unwrap()).collect()
+            numbers: s.split_whitespace().map(|l| l.parse().unwrap()).collect(),
         })
     }
 }
