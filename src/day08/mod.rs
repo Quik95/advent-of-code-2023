@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 use itertools::Itertools;
-use nom::{Finish, IResult, InputTake};
+use nom::{Finish, IResult};
 use nom::bytes::complete::{tag, take};
 use nom::combinator::map;
 use nom::sequence::{delimited, separated_pair};

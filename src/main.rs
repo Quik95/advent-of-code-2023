@@ -11,6 +11,7 @@ use crate::day05::Day05;
 use crate::day06::Day06;
 use crate::day07::Day07;
 use crate::day08::Day08;
+use crate::day09::Day09;
 
 mod day01;
 mod day02;
@@ -20,6 +21,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 fn main() {
     color_eyre::install().unwrap();
@@ -33,6 +35,7 @@ fn main() {
         Box::<Day06>::default(),
         Box::<Day07>::default(),
         Box::<Day08>::default(),
+        Box::<Day09>::default(),
     ];
 
     let n_days = days.len();
